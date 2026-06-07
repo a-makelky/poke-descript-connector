@@ -2,9 +2,31 @@ const endpoint = document.querySelector("#mcp-endpoint");
 const publicMcpEndpoint = "https://poke-descript.aaronmakelky.com/mcp";
 if (endpoint) endpoint.textContent = publicMcpEndpoint;
 
+const copyPromptMenu = document.querySelector("#copy-prompt-menu");
 const copyPromptButton = document.querySelector("#copy-poke-prompt");
 const copyStatus = document.querySelector("#copy-status");
 const promptFallback = document.querySelector("#poke-prompt-fallback");
+
+function legacyCopyText(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.setAttribute("readonly", "");
+  textArea.style.position = "fixed";
+  textArea.style.top = "0";
+  textArea.style.left = "-9999px";
+  document.body.append(textArea);
+  textArea.focus();
+  textArea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } finally {
+    textArea.remove();
+  }
+
+  return copied;
+}
 
 copyPromptButton?.addEventListener("click", async () => {
   const prompt = [
@@ -28,10 +50,22 @@ copyPromptButton?.addEventListener("click", async () => {
   }
 
   try {
-    await navigator.clipboard.writeText(prompt);
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(prompt);
+    } else if (!legacyCopyText(prompt)) {
+      throw new Error("Copy command failed");
+    }
     if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
   } catch {
+    const copied = legacyCopyText(prompt);
+
+    if (copied) {
+      if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
+      return;
+    }
+
     if (copyStatus) copyStatus.textContent = "";
+    if (copyPromptMenu instanceof HTMLDetailsElement) copyPromptMenu.open = true;
     if (promptFallback instanceof HTMLTextAreaElement) {
       promptFallback.value = prompt;
       promptFallback.hidden = false;
