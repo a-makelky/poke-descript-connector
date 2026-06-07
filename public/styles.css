@@ -157,6 +157,10 @@ a {
   transform: rotate(180deg);
 }
 
+.copy-menu:not([open]) .copy-menu-body {
+  display: none;
+}
+
 .copy-menu-body {
   background: #ffffff;
   border: 1px solid #d8dee8;
