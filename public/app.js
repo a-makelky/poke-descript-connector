@@ -1,5 +1,33 @@
 const endpoint = document.querySelector("#mcp-endpoint");
-if (endpoint) endpoint.textContent = `${window.location.origin}/mcp`;
+const publicMcpEndpoint = "https://poke-descript.aaronmakelky.com/mcp";
+if (endpoint) endpoint.textContent = publicMcpEndpoint;
+
+const copyPromptButton = document.querySelector("#copy-poke-prompt");
+const copyStatus = document.querySelector("#copy-status");
+
+copyPromptButton?.addEventListener("click", async () => {
+  const prompt = [
+    "Help me connect Poke to Descript using this MCP connector.",
+    "",
+    `MCP endpoint: ${publicMcpEndpoint}`,
+    "Auth: API key. Use my Descript API token as the API key.",
+    "",
+    "Do not ask me to paste the Descript token into chat. If the token is missing, send me to the Poke integration credential field.",
+    "",
+    "After the integration is connected, run the first test using only the Descript integration.",
+    "",
+    "Call descript_search_projects with limit 1 and tell me the tool response summary.",
+    "",
+    "Start read-only. Do not import, edit, publish, or cancel anything unless I explicitly ask and include the required confirmation field."
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(prompt);
+    if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
+  } catch {
+    if (copyStatus) copyStatus.textContent = prompt;
+  }
+});
 
 const form = document.querySelector("#upload-form");
 const output = document.querySelector("#upload-output");
