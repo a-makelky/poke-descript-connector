@@ -3,7 +3,7 @@ const publicMcpEndpoint = "https://poke-descript.aaronmakelky.com/mcp";
 if (endpoint) endpoint.textContent = publicMcpEndpoint;
 
 const copyPromptMenu = document.querySelector("#copy-prompt-menu");
-const copyPromptButton = document.querySelector("#copy-poke-prompt");
+const copyPromptSummary = document.querySelector("#copy-prompt-menu > summary");
 const copyStatus = document.querySelector("#copy-status");
 const promptFallback = document.querySelector("#poke-prompt-fallback");
 
@@ -28,7 +28,7 @@ function legacyCopyText(text) {
   return copied;
 }
 
-copyPromptButton?.addEventListener("click", async () => {
+copyPromptSummary?.addEventListener("click", async () => {
   const prompt = [
     "Help me connect Poke to Descript using this MCP connector.",
     "",
@@ -54,6 +54,7 @@ copyPromptButton?.addEventListener("click", async () => {
       if (!navigator.clipboard?.writeText) throw new Error("Copy command failed");
       await navigator.clipboard.writeText(prompt);
     }
+    if (copyPromptMenu instanceof HTMLDetailsElement) copyPromptMenu.open = true;
     if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
   } catch {
     if (copyStatus) copyStatus.textContent = "";
