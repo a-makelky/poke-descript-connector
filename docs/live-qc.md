@@ -59,6 +59,14 @@ Destructive workflow evidence:
 
 Do not record Descript tokens, signed upload URLs, project IDs, job IDs, or transcript contents in this public repo.
 
+Observed Poke app issue:
+
+- After clicking `Retry Connection` on Poke's integration detail page, Poke's app route rendered blank.
+- The browser console showed React error #31 for an object with keys `{message, status}`.
+- The Poke integrations list still loaded and showed `descript`, and earlier Poke-over-iMessage testing successfully queried Descript through the connector.
+- Treat this as a Poke integration-detail UI/status-rendering issue unless Poke message tests also fail.
+- Do not record account-specific Poke integration route IDs in this public repo.
+
 ## Drive Mismatch
 
 If Descript returns `403 Project does not belong to the specified drive`, treat it as a Drive mismatch first. The token may be valid, but scoped to a different Drive than the target project.
