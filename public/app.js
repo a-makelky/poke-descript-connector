@@ -4,6 +4,7 @@ if (endpoint) endpoint.textContent = publicMcpEndpoint;
 
 const copyPromptButton = document.querySelector("#copy-poke-prompt");
 const copyStatus = document.querySelector("#copy-status");
+const promptFallback = document.querySelector("#poke-prompt-fallback");
 
 copyPromptButton?.addEventListener("click", async () => {
   const prompt = [
@@ -21,11 +22,22 @@ copyPromptButton?.addEventListener("click", async () => {
     "Start read-only. Do not import, edit, publish, or cancel anything unless I explicitly ask and include the required confirmation field."
   ].join("\n");
 
+  if (promptFallback instanceof HTMLTextAreaElement) {
+    promptFallback.hidden = true;
+    promptFallback.value = "";
+  }
+
   try {
     await navigator.clipboard.writeText(prompt);
     if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
   } catch {
-    if (copyStatus) copyStatus.textContent = prompt;
+    if (copyStatus) copyStatus.textContent = "";
+    if (promptFallback instanceof HTMLTextAreaElement) {
+      promptFallback.value = prompt;
+      promptFallback.hidden = false;
+      promptFallback.focus();
+      promptFallback.select();
+    }
   }
 });
 
