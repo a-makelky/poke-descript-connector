@@ -42,13 +42,21 @@ Passed:
 - Mutating MCP tools rejected missing confirmation fields for import, Underlord edit, publish, and cancel.
 - Upload helper rejected missing `confirm_import: true`.
 - Public install page explains per-user tokens, no Worker token storage, and Descript token rotation.
+- Destructive signed-upload workflow succeeded with demo media.
+- Demo media import job stopped with `success`.
+- Underlord edit job stopped with `success`.
+- Transcript export after the destructive workflow succeeded without recording transcript content.
+- QC after the destructive workflow passed with 0 warnings.
 
-Prepared but not run in this snapshot:
+Destructive workflow evidence:
 
-- Demo media URL: `https://samplelib.com/mp3/sample-3s.mp3`
-- Destructive workflow: import demo media, wait for job, export transcript, optional Underlord edit, QC before/after.
+- Project name: `Poke Connector Full Smoke 2026-06-07T18:15:17.680Z`
+- Demo media source: `https://samplelib.com/mp3/sample-3s.mp3`
+- Demo media size: 52,079 bytes
+- Upload path: signed upload URL requested through the connector, bytes uploaded directly to Descript
+- Transcript content type: `text/plain; charset=utf-8`
 
-Only run the destructive workflow with a disposable Descript Drive or explicit approval to create a test project in the token's current Drive.
+Do not record Descript tokens, signed upload URLs, project IDs, job IDs, or transcript contents in this public repo.
 
 ## Drive Mismatch
 
