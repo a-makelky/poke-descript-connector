@@ -51,6 +51,7 @@ Passed:
 - Transcript export after the destructive workflow succeeded without recording transcript content.
 - QC after the destructive workflow passed with 0 warnings.
 - Poke over iMessage returned `PB Tip 10 - How I Make Videos With AI and Descript`, but this should not be treated as Descript MCP proof because Poke may have found the same title through another connected source.
+- Poke over iMessage succeeded after a forced Descript-only prompt: Poke was told not to use Notion, Gmail, Drive, or memory, and returned `found 1 descript project` plus a project title and UUID-shaped project ID. The private project title and ID are intentionally not recorded here.
 
 Destructive workflow evidence:
 

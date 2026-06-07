@@ -115,7 +115,7 @@ Poke Kitchen smoke:
 6. Run this first prompt:
 
 ```text
-Search my Descript projects and return one project with its project_id. Do not edit anything.
+Use only the Descript integration. Do not use Notion, Gmail, Drive, or memory. Call descript_search_projects with limit 1 and tell me the tool response summary. Do not edit anything.
 ```
 
 Full live acceptance:
