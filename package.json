@@ -1,0 +1,55 @@
+{
+  "name": "poke-descript-connector",
+  "version": "0.1.0",
+  "description": "Poke assistant connector for Descript, exposed as a Cloudflare Workers MCP server.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "check": "npm run types:worker && npm run format:check && npm run lint && npm run build && npm test && npm run test:worker && npm run deploy:dry-run",
+    "deploy": "wrangler deploy",
+    "deploy:dry-run": "wrangler deploy --dry-run --env production",
+    "dev": "wrangler dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:live": "vitest run tests/live --maxWorkers=1",
+    "test:watch": "vitest",
+    "test:worker": "vitest -c vitest.worker.config.ts run",
+    "types:worker": "wrangler types"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a-makelky/poke-descript-connector.git"
+  },
+  "keywords": [
+    "poke",
+    "descript",
+    "mcp",
+    "cloudflare-workers",
+    "model-context-protocol"
+  ],
+  "author": "Aaron Makelky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/a-makelky/poke-descript-connector/issues"
+  },
+  "homepage": "https://github.com/a-makelky/poke-descript-connector#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "agents": "^0.14.5",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.16.13",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.9.2",
+    "eslint": "^10.4.1",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1",
+    "vitest": "^4.1.8",
+    "wrangler": "^4.98.0"
+  }
+}

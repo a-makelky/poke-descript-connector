@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "poke-descript-connector",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/mcp", "/mcp/*", "/api/*"],
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "vars": {
+    "DESCRIPT_API_BASE": "https://descriptapi.com/v1",
+    "ENVIRONMENT": "production"
+  },
+  "env": {
+    "staging": {
+      "name": "poke-descript-connector-staging",
+      "vars": {
+        "DESCRIPT_API_BASE": "https://descriptapi.com/v1",
+        "ENVIRONMENT": "staging"
+      }
+    },
+    "production": {
+      "name": "poke-descript-connector",
+      "vars": {
+        "DESCRIPT_API_BASE": "https://descriptapi.com/v1",
+        "ENVIRONMENT": "production"
+      }
+    }
+  }
+}

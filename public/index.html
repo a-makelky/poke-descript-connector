@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poke Descript Connector</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Open-source MCP connector</p>
+        <h1>Poke can run Descript workflows from plain language.</h1>
+        <p class="lede">
+          Connect a Descript API token, add this MCP server to Poke, then ask Poke to search
+          projects, import media, prompt Underlord, export transcripts, and publish media.
+        </p>
+        <div class="endpoint">
+          <span>MCP endpoint</span>
+          <code id="mcp-endpoint">/mcp</code>
+        </div>
+      </section>
+
+      <section class="steps" aria-label="Install steps">
+        <article>
+          <span class="step">1</span>
+          <h2>Create a Descript token</h2>
+          <p>
+            In Descript, open Settings, create an API token, and choose the Drive you want Poke to
+            use.
+          </p>
+          <a href="https://web.descript.com/settings/api-tokens" rel="noreferrer"
+            >Open Descript settings</a
+          >
+        </article>
+        <article>
+          <span class="step">2</span>
+          <h2>Add the MCP server in Poke</h2>
+          <p>
+            Use this site's <code>/mcp</code> URL as the MCP Server URL. Paste the Descript token as
+            the API key.
+          </p>
+          <a href="https://poke.com/integrations/new" rel="noreferrer">Open Poke integrations</a>
+        </article>
+        <article>
+          <span class="step">3</span>
+          <h2>Start read-only</h2>
+          <p>
+            Ask Poke to search projects or export a transcript before asking it to edit or publish.
+          </p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Local upload helper</h2>
+        <p>
+          For local files, the Worker asks Descript for signed upload URLs. Your browser uploads
+          file bytes directly to Descript, so this server does not proxy large media.
+        </p>
+        <form id="upload-form">
+          <label>
+            Descript API token
+            <input id="token" name="token" type="password" autocomplete="off" />
+          </label>
+          <label>
+            Project name
+            <input id="project-name" name="project-name" value="Poke Descript Upload" />
+          </label>
+          <label>
+            Media file
+            <input id="file" name="file" type="file" accept="audio/*,video/*" />
+          </label>
+          <button type="submit">Request upload URL</button>
+        </form>
+        <pre id="upload-output" aria-live="polite"></pre>
+      </section>
+
+      <section class="tools">
+        <h2>Tools exposed to Poke</h2>
+        <ul>
+          <li>Search and inspect projects</li>
+          <li>Import URL media or request direct-upload URLs</li>
+          <li>Prompt Underlord for edits</li>
+          <li>Export transcripts</li>
+          <li>Publish media</li>
+          <li>Poll, wait for, or cancel jobs</li>
+          <li>Compare before/after project state</li>
+        </ul>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

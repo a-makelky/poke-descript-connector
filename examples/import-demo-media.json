@@ -1,0 +1,16 @@
+{
+  "confirm_import": true,
+  "project_name": "Poke Descript Connector Demo",
+  "team_access": "none",
+  "add_media": {
+    "demo.mp4": {
+      "url": "https://example.com/path/to-demo.mp4"
+    }
+  },
+  "add_compositions": [
+    {
+      "name": "Demo Video",
+      "clips": [{ "media": "demo.mp4" }]
+    }
+  ]
+}
