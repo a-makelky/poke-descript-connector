@@ -47,6 +47,7 @@ Passed:
 - Underlord edit job stopped with `success`.
 - Transcript export after the destructive workflow succeeded without recording transcript content.
 - QC after the destructive workflow passed with 0 warnings.
+- Poke over iMessage completed a read-only Descript project search and returned `PB Tip 10 - How I Make Videos With AI and Descript`.
 
 Destructive workflow evidence:
 
