@@ -32,6 +32,9 @@
   ],
   "author": "Aaron Makelky",
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "bugs": {
     "url": "https://github.com/a-makelky/poke-descript-connector/issues"
   },

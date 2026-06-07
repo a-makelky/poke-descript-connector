@@ -45,7 +45,7 @@ The connector is the offensive coordinator: Poke calls a named MCP tool, and the
 
 Requirements:
 
-- Node.js 24+
+- Node.js 22+
 - npm
 - Cloudflare account for deployment
 
