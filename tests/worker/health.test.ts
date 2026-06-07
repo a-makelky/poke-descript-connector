@@ -21,6 +21,17 @@ type ToolsListResponse = {
   };
 };
 
+type ToolCallResponse = {
+  result: {
+    content: { type: string; text: string }[];
+    isError?: boolean;
+    structuredContent?: {
+      ok: boolean;
+      summary: string;
+    };
+  };
+};
+
 type WorkerExports = {
   default: {
     fetch: (request: Request) => Promise<Response> | Response;
@@ -64,6 +75,53 @@ describe("Worker public endpoints", () => {
     expect(toolNames).toContain("descript_edit_with_underlord");
   });
 
+  it("allows MCP discovery before a Descript token is attached", async () => {
+    const initialize = await callMcp<InitializeResponse>(
+      {
+        id: 10,
+        method: "initialize",
+        params: {
+          protocolVersion: "2025-03-26",
+          capabilities: {},
+          clientInfo: { name: "worker-test", version: "0.1.0" }
+        }
+      },
+      { authorization: false }
+    );
+
+    expect(initialize.result.serverInfo.name).toBe("poke-descript-connector");
+
+    const tools = await callMcp<ToolsListResponse>(
+      {
+        id: 11,
+        method: "tools/list",
+        params: {}
+      },
+      { authorization: false }
+    );
+
+    const toolNames = tools.result.tools.map((tool) => tool.name);
+    expect(toolNames).toContain("descript_search_projects");
+  });
+
+  it("returns a clear tool error when Descript is called without a token", async () => {
+    const result = await callMcp<ToolCallResponse>(
+      {
+        id: 12,
+        method: "tools/call",
+        params: {
+          name: "descript_search_projects",
+          arguments: { limit: 1 }
+        }
+      },
+      { authorization: false }
+    );
+
+    expect(result.result.isError).toBe(true);
+    expect(result.result.structuredContent?.ok).toBe(false);
+    expect(result.result.structuredContent?.summary).toMatch(/Descript API token is missing/i);
+  });
+
   it("requires confirmation before requesting Descript upload URLs", async () => {
     const response = await fetchWorker(
       new Request("https://example.com/api/descript/upload-urls", {
@@ -91,15 +149,22 @@ describe("Worker public endpoints", () => {
   });
 });
 
-async function callMcp<TResponse>(message: Record<string, unknown>): Promise<TResponse> {
+async function callMcp<TResponse>(
+  message: Record<string, unknown>,
+  options: { authorization?: boolean } = {}
+): Promise<TResponse> {
+  const headers = new Headers({
+    Accept: "application/json, text/event-stream",
+    "Content-Type": "application/json"
+  });
+  if (options.authorization !== false) {
+    headers.set("Authorization", "Bearer dapi_test");
+  }
+
   const response = await fetchWorker(
     new Request("https://example.com/mcp", {
       method: "POST",
-      headers: {
-        Accept: "application/json, text/event-stream",
-        Authorization: "Bearer dapi_test",
-        "Content-Type": "application/json"
-      },
+      headers,
       body: JSON.stringify({ jsonrpc: "2.0", ...message })
     })
   );

@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod/v4";
+import { MissingDescriptTokenError } from "../descript/auth.js";
 import { DescriptClient } from "../descript/client.js";
 import { DescriptApiError } from "../descript/errors.js";
 import { diffProjectState, type ProjectDiffInput } from "../descript/qc.js";
@@ -37,7 +38,7 @@ import {
 
 type ToolContext = {
   apiBase: string;
-  token: string;
+  token?: string;
   fetcher?: Fetcher;
 };
 
@@ -88,7 +89,7 @@ export async function callDescriptToolForTest(
 ): Promise<ToolResponse> {
   const tool = toolDefinitions.find((definition) => definition.name === name);
   if (!tool) throw new Error(`Unknown tool: ${name}`);
-  return tool.execute(call.input, call);
+  return executeSafely(tool, call.input, call);
 }
 
 async function executeSafely(
@@ -104,6 +105,10 @@ async function executeSafely(
 }
 
 function client(context: ToolContext): DescriptClient {
+  if (!context.token) {
+    throw new MissingDescriptTokenError();
+  }
+
   const options = {
     apiBase: context.apiBase,
     token: context.token
@@ -358,6 +363,16 @@ function sleep(ms: number): Promise<void> {
 }
 
 function errorToToolResponse(error: unknown): ToolResponse {
+  if (error instanceof MissingDescriptTokenError) {
+    return toolResponse({
+      ok: false,
+      summary: error.message,
+      data: {},
+      warnings: [],
+      next_actions: ["Add a Descript API token to the Poke integration and retry this tool."]
+    });
+  }
+
   if (error instanceof DescriptApiError) {
     return toolResponse({
       ok: false,

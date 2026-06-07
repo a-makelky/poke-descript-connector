@@ -1,6 +1,6 @@
 import { createMcpHandler } from "agents/mcp";
 import { DescriptClient } from "./descript/client.js";
-import { extractBearerToken } from "./descript/auth.js";
+import { extractBearerToken, extractOptionalBearerToken } from "./descript/auth.js";
 import { createDescriptMcpServer } from "./mcp/server.js";
 import { asJsonValue, type JsonObject } from "./shared/json.js";
 import { requestUploadUrlsInputSchema } from "./tools/schemas.js";
@@ -36,11 +36,9 @@ async function handleMcpRequest(
   ctx: ExecutionContext
 ): Promise<Response> {
   try {
-    const token = extractBearerToken(request.headers.get("Authorization"));
-    const server = createDescriptMcpServer({
-      apiBase: env.DESCRIPT_API_BASE,
-      token
-    });
+    const token = extractOptionalBearerToken(request.headers.get("Authorization"));
+    const options = { apiBase: env.DESCRIPT_API_BASE, ...(token ? { token } : {}) };
+    const server = createDescriptMcpServer(options);
     const handler = createMcpHandler(server, {
       route: "/mcp",
       enableJsonResponse: false

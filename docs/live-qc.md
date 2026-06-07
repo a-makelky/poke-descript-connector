@@ -26,7 +26,7 @@ Current hosted Worker:
 
 - Install page: `https://poke-descript-connector.aaron-345.workers.dev/`
 - MCP endpoint: `https://poke-descript-connector.aaron-345.workers.dev/mcp`
-- Latest deployed version checked in this pass: `c99c397a-e804-485d-8a41-31ffec055d95`
+- Latest deployed version checked in this pass: `182ccdbf-139e-4be8-8a75-c777b67e3a01`
 
 Passed:
 
@@ -34,7 +34,8 @@ Passed:
 - Hosted MCP smoke found all 10 expected tools.
 - Poke Kitchen `Descript` integration template returned `Connected! Found 10 tools.`
 - Direct MCP initialize returned `poke-descript-connector`.
-- Direct MCP unauthenticated request returned HTTP 401.
+- Direct MCP initialize and `tools/list` now work without a Descript token, so Poke can discover tools before user credentials are attached.
+- Direct MCP unauthenticated `tools/call` returns a structured missing-token tool error instead of blocking discovery.
 - Direct MCP mutation gate rejected `descript_import_media` without `confirm_import: true`.
 - Live read-only Descript search found 1 project.
 - Live read-only project fetch succeeded.
@@ -47,7 +48,7 @@ Passed:
 - Underlord edit job stopped with `success`.
 - Transcript export after the destructive workflow succeeded without recording transcript content.
 - QC after the destructive workflow passed with 0 warnings.
-- Poke over iMessage completed a read-only Descript project search and returned `PB Tip 10 - How I Make Videos With AI and Descript`.
+- Poke over iMessage returned `PB Tip 10 - How I Make Videos With AI and Descript`, but this should not be treated as Descript MCP proof because Poke may have found the same title through another connected source.
 
 Destructive workflow evidence:
 
@@ -63,8 +64,8 @@ Observed Poke app issue:
 
 - After clicking `Retry Connection` on Poke's integration detail page, Poke's app route rendered blank.
 - The browser console showed React error #31 for an object with keys `{message, status}`.
-- The Poke integrations list still loaded and showed `descript`, and earlier Poke-over-iMessage testing successfully queried Descript through the connector.
-- Treat this as a Poke integration-detail UI/status-rendering issue unless Poke message tests also fail.
+- The Poke integrations list still loaded and showed `descript`.
+- Treat this as a Poke integration-detail UI/status-rendering issue only after a fresh retry against deployed version `182ccdbf-139e-4be8-8a75-c777b67e3a01` also fails.
 - Do not record account-specific Poke integration route IDs in this public repo.
 
 ## Drive Mismatch

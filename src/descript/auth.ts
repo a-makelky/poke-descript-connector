@@ -8,8 +8,17 @@ export class MissingDescriptTokenError extends Error {
 }
 
 export function extractBearerToken(authorizationHeader: string | null): string {
-  if (!authorizationHeader?.trim()) {
+  const token = extractOptionalBearerToken(authorizationHeader);
+  if (!token) {
     throw new MissingDescriptTokenError();
+  }
+
+  return token;
+}
+
+export function extractOptionalBearerToken(authorizationHeader: string | null): string | undefined {
+  if (!authorizationHeader?.trim()) {
+    return undefined;
   }
 
   const match = /^Bearer\s+(.+)$/i.exec(authorizationHeader.trim());

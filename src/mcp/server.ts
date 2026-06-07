@@ -13,7 +13,7 @@ const SERVER_INSTRUCTIONS = [
 
 export type CreateDescriptMcpServerOptions = {
   apiBase: string;
-  token: string;
+  token?: string;
   fetcher?: Fetcher;
 };
 
