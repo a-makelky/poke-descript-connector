@@ -65,6 +65,8 @@ Then mutate with explicit confirmation:
 
 This is like asking a player to repeat the play call before the snap. It prevents accidental edits.
 
+The browser upload helper uses the same rule. `/api/descript/upload-urls` rejects direct calls unless `confirm_import: true` is present.
+
 ## Acceptance Checklist
 
 Code-level hosted smoke:

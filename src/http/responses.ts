@@ -1,6 +1,7 @@
 import { MissingDescriptTokenError } from "../descript/auth.js";
 import { DescriptApiError } from "../descript/errors.js";
 import { asJsonValue } from "../shared/json.js";
+import { ConfirmationRequiredError } from "../tools/confirmations.js";
 import { toolResponse } from "../tools/response.js";
 
 export function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
@@ -36,6 +37,21 @@ export function errorResponse(error: unknown): Response {
         next_actions: error.nextActions
       }),
       { status: error.status }
+    );
+  }
+
+  if (error instanceof ConfirmationRequiredError) {
+    return jsonResponse(
+      toolResponse({
+        ok: false,
+        summary: error.message,
+        data: {},
+        warnings: [],
+        next_actions: [
+          "Add the required confirmation field only when the user clearly wants this action."
+        ]
+      }),
+      { status: 400 }
     );
   }
 

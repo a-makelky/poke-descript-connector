@@ -11,6 +11,7 @@ type InitializeResponse = {
     serverInfo: {
       name: string;
     };
+    instructions?: string;
   };
 };
 
@@ -49,6 +50,8 @@ describe("Worker public endpoints", () => {
     });
 
     expect(initialize.result.serverInfo.name).toBe("poke-descript-connector");
+    expect(initialize.result.instructions).toContain("confirm_import");
+    expect(initialize.result.instructions).toContain("Descript API tokens are scoped to one Drive");
 
     const tools = await callMcp<ToolsListResponse>({
       id: 2,
@@ -59,6 +62,32 @@ describe("Worker public endpoints", () => {
     const toolNames = tools.result.tools.map((tool) => tool.name);
     expect(toolNames).toContain("descript_search_projects");
     expect(toolNames).toContain("descript_edit_with_underlord");
+  });
+
+  it("requires confirmation before requesting Descript upload URLs", async () => {
+    const response = await fetchWorker(
+      new Request("https://example.com/api/descript/upload-urls", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer dapi_test",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          project_name: "Missing Confirmation",
+          add_media: {
+            "demo.mp4": {
+              content_type: "video/mp4",
+              file_size: 1024
+            }
+          }
+        })
+      })
+    );
+
+    const body = await response.json<{ ok: boolean; summary: string }>();
+    expect(response.status).toBe(400);
+    expect(body.ok).toBe(false);
+    expect(body.summary).toContain("confirm_import");
   });
 });
 

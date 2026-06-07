@@ -4,6 +4,7 @@ import { extractBearerToken } from "./descript/auth.js";
 import { createDescriptMcpServer } from "./mcp/server.js";
 import { asJsonValue, type JsonObject } from "./shared/json.js";
 import { requestUploadUrlsInputSchema } from "./tools/schemas.js";
+import { requireConfirmation } from "./tools/confirmations.js";
 import { toolResponse } from "./tools/response.js";
 import { errorResponse, jsonResponse } from "./http/responses.js";
 
@@ -63,6 +64,7 @@ async function handleUploadUrlsRequest(request: Request, env: Env): Promise<Resp
 
     const token = extractBearerToken(request.headers.get("Authorization"));
     const input = requestUploadUrlsInputSchema.parse(await request.json());
+    requireConfirmation("confirm_import", input.confirm_import);
     const body = { ...input };
     delete body.confirm_import;
     const client = new DescriptClient({ apiBase: env.DESCRIPT_API_BASE, token });
