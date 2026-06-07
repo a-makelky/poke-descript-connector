@@ -33,6 +33,8 @@ Passed:
 - Hosted install page returned HTTP 200.
 - Hosted MCP smoke found all 10 expected tools.
 - Poke Kitchen `Descript` integration template returned `Connected! Found 10 tools.`
+- Poke app `Retry Connection` on the `descript` integration succeeded after deploying version `182ccdbf-139e-4be8-8a75-c777b67e3a01`.
+- Poke app integration detail showed Descript MCP tools: Search Projects, Get Project, Import Media, Edit With Underlord, Export Transcript, and 5 more.
 - Direct MCP initialize returned `poke-descript-connector`.
 - Direct MCP initialize and `tools/list` now work without a Descript token, so Poke can discover tools before user credentials are attached.
 - Direct MCP unauthenticated `tools/call` returns a structured missing-token tool error instead of blocking discovery.
@@ -65,7 +67,7 @@ Observed Poke app issue:
 - After clicking `Retry Connection` on Poke's integration detail page, Poke's app route rendered blank.
 - The browser console showed React error #31 for an object with keys `{message, status}`.
 - The Poke integrations list still loaded and showed `descript`.
-- Treat this as a Poke integration-detail UI/status-rendering issue only after a fresh retry against deployed version `182ccdbf-139e-4be8-8a75-c777b67e3a01` also fails.
+- This was resolved by allowing unauthenticated MCP discovery before Descript API token enforcement.
 - Do not record account-specific Poke integration route IDs in this public repo.
 
 ## Drive Mismatch
