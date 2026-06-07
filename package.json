@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Poke assistant connector for Descript, exposed as a Cloudflare Workers MCP server.",
   "type": "module",
+  "packageManager": "npm@11.6.1",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --noEmit",
@@ -33,7 +34,7 @@
   "author": "Aaron Makelky",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.13.0"
   },
   "bugs": {
     "url": "https://github.com/a-makelky/poke-descript-connector/issues"
