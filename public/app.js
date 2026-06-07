@@ -50,20 +50,12 @@ copyPromptButton?.addEventListener("click", async () => {
   }
 
   try {
-    if (navigator.clipboard?.writeText) {
+    if (!legacyCopyText(prompt)) {
+      if (!navigator.clipboard?.writeText) throw new Error("Copy command failed");
       await navigator.clipboard.writeText(prompt);
-    } else if (!legacyCopyText(prompt)) {
-      throw new Error("Copy command failed");
     }
     if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
   } catch {
-    const copied = legacyCopyText(prompt);
-
-    if (copied) {
-      if (copyStatus) copyStatus.textContent = "Copied. Paste it into your Poke conversation.";
-      return;
-    }
-
     if (copyStatus) copyStatus.textContent = "";
     if (copyPromptMenu instanceof HTMLDetailsElement) copyPromptMenu.open = true;
     if (promptFallback instanceof HTMLTextAreaElement) {
