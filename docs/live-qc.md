@@ -35,6 +35,8 @@ Passed:
 - Poke Kitchen `Descript` integration template returned `Connected! Found 10 tools.`
 - Poke app `Retry Connection` on the `descript` integration succeeded after deploying version `182ccdbf-139e-4be8-8a75-c777b67e3a01`.
 - Poke app integration detail showed Descript MCP tools: Search Projects, Get Project, Import Media, Edit With Underlord, Export Transcript, and 5 more.
+- Poke public recipe marketplace search for `Descript` returned no results while the Kitchen recipe was still `In Review`.
+- Poke Kitchen recipe list showed `Descript API Assistant` as `In Review` with no public link.
 - Direct MCP initialize returned `poke-descript-connector`.
 - Direct MCP initialize and `tools/list` now work without a Descript token, so Poke can discover tools before user credentials are attached.
 - Direct MCP unauthenticated `tools/call` returns a structured missing-token tool error instead of blocking discovery.

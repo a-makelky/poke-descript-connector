@@ -18,8 +18,11 @@ Current Poke Kitchen proof, as of 2026-06-07:
 
 - Poke Kitchen connects to the hosted MCP endpoint.
 - The custom `Descript` integration template discovers all 10 tools.
+- A user-facing Poke integration can call `descript_search_projects` when the user supplies their own Descript API token.
 - The `Descript API Assistant` recipe has been created and is `In Review` in Poke.
 - Public one-tap install depends on Poke approving/listing that recipe.
+
+Until the recipe is listed publicly, use the manual Poke MCP integration path with the hosted `/mcp` URL and the user's own Descript API token.
 
 ## What It Does
 
@@ -47,6 +50,10 @@ Mutating tools require explicit confirmation fields, so Poke has to be clear bef
 - Descript API base URL defaults to `https://descriptapi.com/v1`
 
 The connector is the offensive coordinator: Poke calls a named MCP tool, and the Worker translates that into the right Descript API play without exposing anyone else's Drive.
+
+For public presentation, prefer a custom domain such as
+`https://poke-descript.aaronmakelky.com/mcp` over the raw `workers.dev` URL. Keep the same
+per-user token model on any domain.
 
 ## Development
 

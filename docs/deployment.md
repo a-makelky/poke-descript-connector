@@ -31,13 +31,25 @@ npm run deploy -- --env production
 
 ## Custom Domain
 
-Point a Cloudflare route or custom domain at the production Worker. The public MCP URL will be:
+Point a Cloudflare route or custom domain at the production Worker. For a public test project,
+prefer a dedicated subdomain such as:
+
+```text
+poke-descript.aaronmakelky.com
+```
+
+The public MCP URL will be:
 
 ```text
 https://<your-domain>/mcp
 ```
 
-Use that URL in Poke Kitchen when creating the integration template or recipe.
+Use that URL in Poke Kitchen when creating the integration template or recipe. This is mostly a
+trust and polish improvement over `workers.dev`; the real security boundary is still that each Poke
+user supplies their own Descript API token and the Worker does not store it.
+
+When Descript is ready to own the integration, the same Worker shape can move behind an official
+Descript domain, such as an `api.descript.com` MCP path.
 
 ## Observability
 

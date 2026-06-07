@@ -36,6 +36,8 @@ As of 2026-06-07, the hosted Worker has been tested from Poke Kitchen:
 
 Poke's API key field for Kitchen connection testing says the key is used only for testing and is not stored on the template. Public users should still use their own Descript token during install or connection. The normal Poke app install flow will depend on the recipe moving out of review and becoming available through Poke's public recipe surface.
 
+As of 2026-06-07, searching the public Poke recipe marketplace for `Descript` returns no results. Manual MCP integration works, but one-tap public recipe install is blocked until Poke approves/lists the recipe and prompts each installing user for their own API key.
+
 ## Recipe
 
 Create a Poke recipe that requires the Descript MCP integration.

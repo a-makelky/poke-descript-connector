@@ -19,6 +19,10 @@
           <span>MCP endpoint</span>
           <code id="mcp-endpoint">/mcp</code>
         </div>
+        <p class="lede">
+          Public recipe install is pending Poke approval. Until then, add this as a manual MCP
+          integration in Poke and bring your own Descript API token.
+        </p>
       </section>
 
       <section class="steps" aria-label="Install steps">
@@ -38,16 +42,18 @@
           <span class="step">2</span>
           <h2>Add the MCP server in Poke</h2>
           <p>
-            Use this site's <code>/mcp</code> URL as the MCP Server URL. Paste the Descript token as
-            the API key when Poke asks for credentials.
+            Use this site's <code>/mcp</code> URL as the MCP Server URL. Paste your Descript token
+            as the API key when Poke asks for credentials. The shared Worker stays account-neutral;
+            every user brings their own token.
           </p>
-          <a href="https://poke.com/integrations/new" rel="noreferrer">Open Poke integrations</a>
+          <a href="https://poke.com/integrations/add" rel="noreferrer">Open Poke integrations</a>
         </article>
         <article>
           <span class="step">3</span>
           <h2>Start read-only</h2>
           <p>
-            Ask Poke to search projects or export a transcript before asking it to edit or publish.
+            Ask Poke to search projects before asking it to edit or publish. A safe first prompt is:
+            “Use only the Descript integration. Call descript_search_projects with limit 1.”
           </p>
         </article>
       </section>
