@@ -56,6 +56,7 @@ npm run dev
 npm test
 npm run test:worker
 npm run test:hosted
+npm run test:poke
 npm run build
 npm run lint
 npm run check
@@ -82,6 +83,12 @@ For a read-only hosted smoke test against the deployed Worker:
 
 ```bash
 LIVE_READONLY_DESCRIPT_TESTS=true DESCRIPT_API_TOKEN=... npm run test:hosted
+```
+
+For a Poke CLI acceptance test, log in to Poke first and use a test Descript Drive token:
+
+```bash
+RUN_POKE_ACCEPTANCE=true DESCRIPT_API_TOKEN=... npm run test:poke
 ```
 
 ## Deployment

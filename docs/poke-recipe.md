@@ -79,6 +79,14 @@ Optional read-only Descript smoke through the hosted MCP endpoint:
 LIVE_READONLY_DESCRIPT_TESTS=true DESCRIPT_API_TOKEN=... npm run test:hosted
 ```
 
+Poke CLI integration smoke:
+
+```bash
+RUN_POKE_ACCEPTANCE=true DESCRIPT_API_TOKEN=... npm run test:poke
+```
+
+This script first checks `npx poke@latest whoami`. It will not send the Descript token to Poke unless the CLI is logged in and `RUN_POKE_ACCEPTANCE=true` is set. It creates the hosted MCP integration, then Kitchen still owns the final recipe publish/share-link step.
+
 Poke Kitchen smoke:
 
 1. Log in to Poke.

@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:hosted": "node scripts/hosted-mcp-smoke.mjs",
     "test:live": "vitest run tests/live --maxWorkers=1",
+    "test:poke": "node scripts/poke-cli-acceptance.mjs",
     "test:watch": "vitest",
     "test:worker": "vitest -c vitest.worker.config.ts run",
     "types:worker": "wrangler types"
