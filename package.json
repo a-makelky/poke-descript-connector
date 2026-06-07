@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:hosted": "node scripts/hosted-mcp-smoke.mjs",
     "test:live": "vitest run tests/live --maxWorkers=1",
     "test:watch": "vitest",
     "test:worker": "vitest -c vitest.worker.config.ts run",

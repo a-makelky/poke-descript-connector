@@ -3,7 +3,13 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["eslint.config.js", "public/**", "worker-configuration.d.ts", ".wrangler/**"]
+    ignores: [
+      "eslint.config.js",
+      "public/**",
+      "scripts/**/*.mjs",
+      "worker-configuration.d.ts",
+      ".wrangler/**"
+    ]
   },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,

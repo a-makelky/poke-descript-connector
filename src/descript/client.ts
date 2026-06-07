@@ -28,7 +28,7 @@ export class DescriptClient {
   constructor(options: DescriptClientOptions) {
     this.apiBase = options.apiBase.replace(/\/$/, "");
     this.token = options.token;
-    this.fetcher = options.fetcher ?? fetch;
+    this.fetcher = options.fetcher ?? ((request) => fetch(request));
   }
 
   async listProjects(query: Record<string, QueryValue> = {}): Promise<ListProjectsResponse> {

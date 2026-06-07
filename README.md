@@ -55,6 +55,7 @@ Useful scripts:
 npm run dev
 npm test
 npm run test:worker
+npm run test:hosted
 npm run build
 npm run lint
 npm run check
@@ -76,6 +77,12 @@ DESCRIPT_API_TOKEN=... DESCRIPT_LIVE_TEST_MEDIA_URL=https://... LIVE_DESTRUCTIVE
 ```
 
 Use a token for a test Drive and demo media that is safe to import, not a production customer Drive.
+
+For a read-only hosted smoke test against the deployed Worker:
+
+```bash
+LIVE_READONLY_DESCRIPT_TESTS=true DESCRIPT_API_TOKEN=... npm run test:hosted
+```
 
 ## Deployment
 
