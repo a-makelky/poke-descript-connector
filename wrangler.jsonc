@@ -2,6 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "poke-descript-connector",
   "main": "src/index.ts",
+  "workers_dev": true,
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
@@ -29,6 +30,12 @@
     },
     "production": {
       "name": "poke-descript-connector",
+      "routes": [
+        {
+          "pattern": "poke-descript.aaronmakelky.com",
+          "custom_domain": true
+        }
+      ],
       "vars": {
         "DESCRIPT_API_BASE": "https://descriptapi.com/v1",
         "ENVIRONMENT": "production"
