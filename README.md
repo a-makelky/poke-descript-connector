@@ -14,6 +14,13 @@ Current hosted connector:
 - Install page: `https://poke-descript-connector.aaron-345.workers.dev/`
 - MCP endpoint: `https://poke-descript-connector.aaron-345.workers.dev/mcp`
 
+Current Poke Kitchen proof, as of 2026-06-07:
+
+- Poke Kitchen connects to the hosted MCP endpoint.
+- The custom `Descript` integration template discovers all 10 tools.
+- The `Descript API Assistant` recipe has been created and is `In Review` in Poke.
+- Public one-tap install depends on Poke approving/listing that recipe.
+
 ## What It Does
 
 This connector gives Poke these Descript tools:

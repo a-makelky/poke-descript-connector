@@ -20,6 +20,19 @@ Authorization: Bearer <DESCRIPT_API_TOKEN>
 
 Poke also sends `X-Poke-User-Id`. The connector does not store that identifier or the Descript token.
 
+## Current Poke Status
+
+As of 2026-06-07, the hosted Worker has been tested from Poke Kitchen:
+
+- Custom integration template: `Descript`
+- Server URL: `https://poke-descript-connector.aaron-345.workers.dev/mcp`
+- Auth type: `API Key`
+- Kitchen connection result: `Connected! Found 10 tools.`
+- Recipe created: `Descript API Assistant`
+- Recipe status: `In Review`
+
+Poke's API key field for Kitchen connection testing says the key is used only for testing and is not stored on the template. Public users should still use their own Descript token during install or connection. The normal Poke app install flow will depend on the recipe moving out of review and becoming available through Poke's public recipe surface.
+
 ## Recipe
 
 Create a Poke recipe that requires the Descript MCP integration.
