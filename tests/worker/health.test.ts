@@ -147,6 +147,30 @@ describe("Worker public endpoints", () => {
     expect(body.ok).toBe(false);
     expect(body.summary).toContain("confirm_import");
   });
+
+  it("requires a Descript token before polling browser upload jobs", async () => {
+    const response = await fetchWorker(
+      new Request("https://example.com/api/descript/jobs/job_123")
+    );
+
+    const body = await response.json<{ ok: boolean; summary: string }>();
+    expect(response.status).toBe(401);
+    expect(body.ok).toBe(false);
+    expect(body.summary).toMatch(/Descript API token is missing/i);
+  });
+
+  it("rejects non-GET browser upload job polling requests", async () => {
+    const response = await fetchWorker(
+      new Request("https://example.com/api/descript/jobs/job_123", {
+        method: "POST",
+        headers: { Authorization: "Bearer dapi_test" }
+      })
+    );
+
+    const body = await response.json<{ error: string }>();
+    expect(response.status).toBe(405);
+    expect(body.error).toBe("Method not allowed");
+  });
 });
 
 async function callMcp<TResponse>(

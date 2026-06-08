@@ -26,6 +26,11 @@ export default {
       return handleUploadUrlsRequest(request, env);
     }
 
+    const descriptJobId = getDescriptJobId(url);
+    if (descriptJobId) {
+      return handleJobStatusRequest(request, env, descriptJobId);
+    }
+
     return env.ASSETS.fetch(request);
   }
 } satisfies ExportedHandler<Env>;
@@ -79,6 +84,39 @@ async function handleUploadUrlsRequest(request: Request, env: Env): Promise<Resp
           "PUT each local file directly to its upload_url.",
           "Use descript_wait_for_job with the returned job_id after uploads finish."
         ]
+      })
+    );
+  } catch (error) {
+    return errorResponse(error);
+  }
+}
+
+function getDescriptJobId(url: URL): string | null {
+  const match = /^\/api\/descript\/jobs\/([^/]+)$/.exec(url.pathname);
+  return match ? decodeURIComponent(match[1] ?? "") : null;
+}
+
+async function handleJobStatusRequest(
+  request: Request,
+  env: Env,
+  jobId: string
+): Promise<Response> {
+  try {
+    if (request.method !== "GET") {
+      return jsonResponse({ error: "Method not allowed" }, { status: 405 });
+    }
+
+    const token = extractBearerToken(request.headers.get("Authorization"));
+    const client = new DescriptClient({ apiBase: env.DESCRIPT_API_BASE, token });
+    const job = await client.getJob(jobId);
+
+    return jsonResponse(
+      toolResponse({
+        ok: true,
+        summary: `Descript job ${jobId} status fetched.`,
+        data: asJsonValue(job) as JsonObject,
+        warnings: [],
+        next_actions: []
       })
     );
   } catch (error) {
