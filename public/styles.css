@@ -230,6 +230,72 @@ button {
   width: fit-content;
 }
 
+.upload-output {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.upload-output:empty {
+  display: none;
+}
+
+.upload-status {
+  background: #111827;
+  border-radius: 8px;
+  color: #eef2ff;
+  overflow-wrap: anywhere;
+  padding: 16px;
+}
+
+.upload-status p {
+  margin: 0;
+}
+
+.upload-result {
+  background: #eefbf8;
+  border: 1px solid #99f6e4;
+  border-radius: 8px;
+  color: #134e4a;
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.upload-result.error {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #7c2d12;
+}
+
+.upload-result h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.button-link {
+  background: #111827;
+  border-radius: 6px;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 800;
+  padding: 10px 12px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.upload-details summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.upload-details pre,
 pre {
   background: #111827;
   border-radius: 8px;
@@ -237,10 +303,6 @@ pre {
   overflow: auto;
   padding: 16px;
   white-space: pre-wrap;
-}
-
-pre:empty {
-  display: none;
 }
 
 @media (max-width: 760px) {

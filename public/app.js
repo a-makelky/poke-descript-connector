@@ -499,8 +499,90 @@ function summarizeError(error) {
 
 function setOutput(value) {
   if (!output) return;
-  output.textContent =
-    typeof value === "string" ? value : JSON.stringify(sanitizeForDisplay(value), null, 2);
+  output.replaceChildren();
+
+  if (typeof value === "string") {
+    output.append(createStatusMessage(value));
+    return;
+  }
+
+  output.append(createResultMessage(value));
+}
+
+function createStatusMessage(message) {
+  const container = document.createElement("div");
+  container.className = "upload-status";
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = message;
+  container.append(paragraph);
+
+  return container;
+}
+
+function createResultMessage(result) {
+  const sanitized = sanitizeForDisplay(result);
+  const container = document.createElement("div");
+  container.className = `upload-result${sanitized?.ok === false ? " error" : ""}`;
+
+  const heading = document.createElement("h3");
+  heading.textContent =
+    sanitized?.summary || (sanitized?.ok === false ? "Upload failed" : "Upload result");
+  container.append(heading);
+
+  const projectUrl = getProjectUrl(result);
+  if (projectUrl) {
+    const actions = document.createElement("div");
+    actions.className = "upload-actions";
+
+    const link = document.createElement("a");
+    link.className = "button-link";
+    link.href = projectUrl;
+    link.rel = "noreferrer";
+    link.target = "_blank";
+    link.textContent = "Open Descript project";
+    actions.append(link);
+    container.append(actions);
+  }
+
+  const projectId = getProjectId(result);
+  if (projectId) {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = `Project ID: ${projectId}`;
+    container.append(paragraph);
+  }
+
+  const details = document.createElement("details");
+  details.className = "upload-details";
+
+  const summary = document.createElement("summary");
+  summary.textContent = "Details";
+  details.append(summary);
+
+  const pre = document.createElement("pre");
+  pre.textContent = JSON.stringify(sanitized, null, 2);
+  details.append(pre);
+  container.append(details);
+
+  return container;
+}
+
+function getProjectUrl(result) {
+  return (
+    result?.data?.final_job?.project_url ??
+    result?.data?.descript_job?.project_url ??
+    result?.data?.project_url ??
+    ""
+  );
+}
+
+function getProjectId(result) {
+  return (
+    result?.data?.final_job?.project_id ??
+    result?.data?.descript_job?.project_id ??
+    result?.data?.project_id ??
+    ""
+  );
 }
 
 function sanitizeForDisplay(value) {
