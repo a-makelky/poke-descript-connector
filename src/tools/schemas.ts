@@ -90,7 +90,7 @@ export const publishMediaInputSchema = z.object({
   project_id: uuidish,
   composition_id: uuidish,
   media_type: z.enum(["Video", "Audio", "GIF"]).default("Video"),
-  resolution: z.enum(["480p", "720p", "1080p", "4k"]).optional(),
+  resolution: z.enum(["480p", "720p", "1080p", "4k"]).default("1080p"),
   access_level: z.enum(["private", "unlisted", "public"]).optional(),
   callback_url: z.url().optional()
 });

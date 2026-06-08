@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   editWithUnderlordInputSchema,
   importMediaInputSchema,
+  publishMediaInputSchema,
   qcProjectChangesInputSchema,
   searchProjectsInputSchema,
   waitForJobInputSchema
@@ -83,6 +84,17 @@ describe("tool input schemas", () => {
 
     expect(input.timeout_seconds).toBe(120);
     expect(input.poll_interval_seconds).toBe(5);
+  });
+
+  it("defaults video publish jobs to 1080p", () => {
+    const input = publishMediaInputSchema.parse({
+      confirm_publish: true,
+      project_id: "project-1",
+      composition_id: "composition-1"
+    });
+
+    expect(input.media_type).toBe("Video");
+    expect(input.resolution).toBe("1080p");
   });
 
   it("accepts minimal before/after QC snapshots", () => {
