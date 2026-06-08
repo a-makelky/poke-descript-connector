@@ -70,6 +70,7 @@ copyPromptSummary?.addEventListener("click", async () => {
 
 const form = document.querySelector("#upload-form");
 const output = document.querySelector("#upload-output");
+const directUploadContentType = "application/octet-stream";
 const activeJobStates = new Set([
   "created",
   "queued",
@@ -85,6 +86,7 @@ const terminalJobStates = new Set([
   "completed",
   "success",
   "succeeded",
+  "stopped",
   "failed",
   "error",
   "errored",
@@ -237,7 +239,7 @@ function uploadFileWithProgress(uploadUrl, file, onProgress) {
     xhr.open("PUT", uploadUrl);
     xhr.timeout = 15 * 60 * 1000;
     xhr.responseType = "text";
-    xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+    xhr.setRequestHeader("Content-Type", directUploadContentType);
 
     xhr.upload.onprogress = (event) => {
       const total = event.lengthComputable ? event.total : file.size;
@@ -341,7 +343,10 @@ function isTerminalJob(job) {
 
 function isFailedJob(job) {
   const state = getJobState(job);
-  return state ? failedJobStates.has(state) : false;
+  const resultStatus = String(job?.result?.status ?? "")
+    .trim()
+    .toLowerCase();
+  return failedJobStates.has(state) || failedJobStates.has(resultStatus);
 }
 
 function getJobState(job) {
