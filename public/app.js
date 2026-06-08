@@ -499,7 +499,28 @@ function summarizeError(error) {
 
 function setOutput(value) {
   if (!output) return;
-  output.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  output.textContent =
+    typeof value === "string" ? value : JSON.stringify(sanitizeForDisplay(value), null, 2);
+}
+
+function sanitizeForDisplay(value) {
+  if (Array.isArray(value)) return value.map((item) => sanitizeForDisplay(item));
+  if (!value || typeof value !== "object") return value;
+
+  const redacted = {};
+  for (const [key, item] of Object.entries(value)) {
+    const normalizedKey = key.toLowerCase();
+    if (
+      normalizedKey === "upload_url" ||
+      normalizedKey.includes("token") ||
+      normalizedKey === "authorization"
+    ) {
+      redacted[key] = "[redacted]";
+      continue;
+    }
+    redacted[key] = sanitizeForDisplay(item);
+  }
+  return redacted;
 }
 
 function formatBytes(bytes) {
