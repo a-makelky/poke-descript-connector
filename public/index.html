@@ -100,8 +100,9 @@
       <section class="panel">
         <h2>Local upload helper</h2>
         <p>
-          For local files, the Worker asks Descript for signed upload URLs. Your browser uploads
-          file bytes directly to Descript, so this server does not proxy large media.
+          For local files, the Worker asks Descript for signed upload URLs. Your browser tries the
+          direct upload first. If that storage upload is blocked, the Worker relays the file to
+          Descript and then polls the import job.
         </p>
         <form id="upload-form">
           <label>

@@ -140,13 +140,7 @@ form?.addEventListener("submit", async (event) => {
     }
 
     setOutput("Got the signed upload URL. Starting browser upload to Descript...");
-    const upload = await uploadFileWithProgress(uploadUrl, file, ({ loaded, total, percent }) => {
-      const totalText = total ? ` of ${formatBytes(total)}` : "";
-      const percentText = percent === null ? "" : ` ${percent}%`;
-      setOutput(
-        `Uploading directly to Descript:${percentText} (${formatBytes(loaded)}${totalText})`
-      );
-    });
+    const upload = await uploadWithFallback(uploadUrl, token, file);
 
     const jobId = result?.data?.job_id;
     if (!jobId) {
@@ -155,6 +149,7 @@ form?.addEventListener("submit", async (event) => {
         summary: "Upload finished, but Descript did not return a job ID to poll.",
         data: {
           upload_status: upload.status,
+          upload_method: upload.method,
           descript_job: result.data
         },
         warnings: ["No job_id was present in the Descript import response."],
@@ -182,6 +177,7 @@ form?.addEventListener("submit", async (event) => {
         : "Upload finished and Descript finished processing the file.",
       data: {
         upload_status: upload.status,
+        upload_method: upload.method,
         upload_response: upload.body,
         descript_job: result.data,
         final_job: finalJob
@@ -250,7 +246,7 @@ function uploadFileWithProgress(uploadUrl, file, onProgress) {
     xhr.onload = () => {
       const body = xhr.responseText || "";
       if (xhr.status >= 200 && xhr.status < 300) {
-        resolve({ status: xhr.status, body });
+        resolve({ status: xhr.status, body, method: "direct_signed_url" });
         return;
       }
 
@@ -285,6 +281,114 @@ function uploadFileWithProgress(uploadUrl, file, onProgress) {
 
     xhr.send(file);
   });
+}
+
+async function uploadWithFallback(uploadUrl, token, file) {
+  try {
+    return await uploadFileWithProgress(uploadUrl, file, ({ loaded, total, percent }) => {
+      const totalText = total ? ` of ${formatBytes(total)}` : "";
+      const percentText = percent === null ? "" : ` ${percent}%`;
+      setOutput(
+        `Uploading directly to Descript:${percentText} (${formatBytes(loaded)}${totalText})`
+      );
+    });
+  } catch (directError) {
+    setOutput({
+      ok: false,
+      summary: "Direct upload was blocked by the browser. Trying the Worker relay.",
+      data: { direct_upload_error: summarizeError(directError) },
+      warnings: [],
+      next_actions: []
+    });
+
+    return uploadFileThroughWorker(uploadUrl, token, file, ({ loaded, total, percent }) => {
+      const totalText = total ? ` of ${formatBytes(total)}` : "";
+      const percentText = percent === null ? "" : ` ${percent}%`;
+      const waitingText = percent === 100 ? " Waiting for Descript to accept it..." : "";
+      setOutput(
+        `Uploading through Worker relay:${percentText} (${formatBytes(loaded)}${totalText}).${waitingText}`
+      );
+    });
+  }
+}
+
+function uploadFileThroughWorker(uploadUrl, token, file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/descript/upload-proxy");
+    xhr.timeout = 15 * 60 * 1000;
+    xhr.responseType = "text";
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Content-Type", directUploadContentType);
+    xhr.setRequestHeader("X-Descript-Upload-Url", uploadUrl);
+
+    xhr.upload.onprogress = (event) => {
+      const total = event.lengthComputable ? event.total : file.size;
+      const percent = total ? Math.round((event.loaded / total) * 100) : null;
+      onProgress({ loaded: event.loaded, total, percent });
+    };
+
+    xhr.onload = () => {
+      let result;
+      try {
+        result = parseUploadProxyResponse(xhr.responseText, xhr.status);
+      } catch (error) {
+        reject(error);
+        return;
+      }
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({
+          status: result?.data?.upload_status ?? xhr.status,
+          body: result,
+          method: "worker_relay"
+        });
+        return;
+      }
+
+      reject(
+        new UploadHelperError(result?.summary || `Worker relay returned HTTP ${xhr.status}.`, {
+          status: xhr.status,
+          response: result
+        })
+      );
+    };
+
+    xhr.onerror = () => {
+      reject(
+        new UploadHelperError("Worker relay upload failed before the file reached the Worker.", {
+          status: xhr.status || null
+        })
+      );
+    };
+
+    xhr.ontimeout = () => {
+      reject(
+        new UploadHelperError("Worker relay upload timed out before Descript accepted the file.", {
+          timeout_ms: xhr.timeout
+        })
+      );
+    };
+
+    xhr.onabort = () => {
+      reject(new UploadHelperError("Worker relay upload was aborted.", {}));
+    };
+
+    xhr.send(file);
+  });
+}
+
+function parseUploadProxyResponse(text, status) {
+  if (!text) return {};
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new UploadHelperError("Worker relay returned a non-JSON response.", {
+      status,
+      response: text.slice(0, 2000)
+    });
+  }
 }
 
 async function pollJob(token, jobId, onStatus) {
@@ -383,6 +487,14 @@ function formatUploadError(error) {
     warnings: [],
     next_actions: ["Refresh the page and try the upload again."]
   };
+}
+
+function summarizeError(error) {
+  if (error instanceof UploadHelperError) {
+    return { summary: error.message, data: error.details };
+  }
+
+  return { summary: error instanceof Error ? error.message : "Unknown upload error." };
 }
 
 function setOutput(value) {

@@ -171,6 +171,41 @@ describe("Worker public endpoints", () => {
     expect(response.status).toBe(405);
     expect(body.error).toBe("Method not allowed");
   });
+
+  it("requires a Descript token before proxying browser uploads", async () => {
+    const response = await fetchWorker(
+      new Request("https://example.com/api/descript/upload-proxy", {
+        method: "POST",
+        headers: {
+          "X-Descript-Upload-Url": "https://storage.googleapis.com/descript-upload/demo"
+        },
+        body: "demo"
+      })
+    );
+
+    const body = await response.json<{ ok: boolean; summary: string }>();
+    expect(response.status).toBe(401);
+    expect(body.ok).toBe(false);
+    expect(body.summary).toMatch(/Descript API token is missing/i);
+  });
+
+  it("rejects browser upload proxy requests for unsupported upload hosts", async () => {
+    const response = await fetchWorker(
+      new Request("https://example.com/api/descript/upload-proxy", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer dapi_test",
+          "X-Descript-Upload-Url": "https://example.com/upload"
+        },
+        body: "demo"
+      })
+    );
+
+    const body = await response.json<{ ok: boolean; summary: string }>();
+    expect(response.status).toBe(400);
+    expect(body.ok).toBe(false);
+    expect(body.summary).toContain("unsupported upload host");
+  });
 });
 
 async function callMcp<TResponse>(
